@@ -1,5 +1,10 @@
 const EMAIL = "nibrszkzh@gmail.com";
 
+const TEXT = {
+  en: { label: "OPEN TO FULL-TIME OPPORTUNITIES", top: "BACK TO TOP ↑" },
+  id: { label: "TERBUKA UNTUK PEKERJAAN FULL-TIME", top: "KEMBALI KE ATAS ↑" },
+};
+
 const FOOTER_LINKS = [
   { label: "GITHUB", href: "https://github.com/nibraszakiyya" },
   { label: "LINKEDIN", href: "https://linkedin.com/in/nibras-zakiyya-azizah" },
@@ -7,12 +12,14 @@ const FOOTER_LINKS = [
   { label: "EMAIL", href: `mailto:${EMAIL}` },
 ];
 
-function Footer() {
+function Footer({ lang = "en" }) {
+  const t = TEXT[lang];
+
   return (
     <footer className="footer">
       <div className="footer-top">
         <div>
-          <p className="footer-label">OPEN TO FULL-TIME OPPORTUNITIES</p>
+          <p className="footer-label">{t.label}</p>
           <a href={`mailto:${EMAIL}`} className="footer-email">
             {EMAIL} ↗
           </a>
@@ -38,7 +45,7 @@ function Footer() {
           className="footer-top-button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          BACK TO TOP ↑
+          {t.top}
         </button>
       </div>
     </footer>
