@@ -46,7 +46,8 @@ const projects = [
     number: "01",
     slug: "mypov",
 
-    title: "MYPOV",
+    title: "MyPOV",
+    label: "Internship",
 
     category:
       "Responsive company profile website developed with Laravel.",
@@ -54,15 +55,15 @@ const projects = [
     color: "purple",
     logo: mypovLogo,
 
-    type: "WEB DEVELOPMENT",
+    type: "Web Development",
     year: "2025",
-    role: "WEB DEVELOPER",
+    role: "Web Developer",
 
         overviewLead:
       "A company profile website whose content can be **managed without touching code**.",
 
-    client: "PENTA GRUP INDONESIA",
-    duration: "MAR – JUN 2025",
+    client: "PT Penta Grup Indonesia",
+    duration: "Mar – Jun 2025",
 
     stats: [
       { value: "6", label: "Content modules managed via dashboard" },
@@ -192,6 +193,73 @@ const projects = [
       "Built truly responsive layouts with Tailwind CSS breakpoints, designing desktop and mobile versions side by side.",
       "Experienced a professional workflow: briefing, iteration, presenting to a supervisor, and turning feedback into revisions.",
     ],
+
+    // ---------- VERSI BAHASA INDONESIA ----------
+    indonesian: {
+      category: "Website company profile responsif yang dikembangkan dengan Laravel.",
+      label: "Magang",
+      type: "Pengembangan Web",
+      overviewLead: "Website company profile yang kontennya bisa **dikelola tanpa menyentuh kode**.",
+      stats: [
+        { label: "Modul konten yang dikelola lewat dashboard" },
+        { label: "Tampilan: desktop & mobile" },
+        { label: "Teknologi yang digunakan" },
+        { value: "3,5", label: "Bulan pengembangan" },
+      ],
+      problemLead: "Konten website **terkunci di dalam kode**.",
+      painPoints: [
+        "Setiap pembaruan konten mengharuskan developer mengubah kode frontend.",
+        "Paket, ulasan, dan FAQ tidak punya tempat terpusat untuk dikelola.",
+        "Perusahaan belum memiliki platform profesional untuk mempromosikan layanannya.",
+      ],
+      solution:
+        "Dashboard admin dengan CRUD lengkap, sehingga tim dapat memperbarui konten, paket, ulasan, dan FAQ sendiri — tanpa perlu mengubah kode.",
+      contribution: [
+        "Merancang dan mengembangkan tampilan responsif untuk desktop dan mobile.",
+        "Merancang struktur database MyPOV.",
+        "Mengintegrasikan backend Laravel dengan frontend menggunakan arsitektur MVC.",
+        "Menerapkan data dinamis menggunakan Model, Controller, dan Blade View Laravel.",
+        "Mengembangkan fitur CRUD untuk pengelolaan konten melalui dashboard admin.",
+        "Mempresentasikan proyek kepada pembimbing lapangan dan menerapkan revisi.",
+      ],
+      screenshots: [
+        {
+          description:
+            "Konten Why Us sepenuhnya dinamis dan dikelola melalui dashboard admin — tanpa perlu mengubah kode frontend.",
+        },
+        {
+          description:
+            "Panduan langkah demi langkah untuk tamu acara, dengan setiap langkah dapat diubah dari dashboard admin.",
+        },
+        {
+          description:
+            "Alur onboarding untuk penyelenggara acara, dikelola secara dinamis bersama panduan untuk tamu.",
+        },
+        {
+          title: "ULASAN",
+          description:
+            "Kartu ulasan pelanggan yang dinamis dengan rating bintang, ditambahkan dan diubah melalui dashboard.",
+        },
+        {
+          title: "PAKET",
+          description:
+            "Kartu harga dengan latar belakang selang-seling dan slider Swiper.js di mobile. Paket dan fitur dihubungkan melalui relasi many-to-many menggunakan pivot table detailpackage.",
+        },
+        {
+          description:
+            "Accordion dua kolom dengan transisi buka-tutup yang halus dan tersusun vertikal di mobile.",
+        },
+      ],
+      documentation: [
+        { caption: "Mempresentasikan MyPOV kepada pembimbing lapangan di Penta Grup" },
+        { caption: "Bersama tim Penta Grup di akhir masa magang" },
+      ],
+      learning: [
+        "Memahami alur data secara menyeluruh — dari perancangan database hingga model, controller, dan Blade view Laravel — serta bagaimana MVC memisahkan logika dan tampilan.",
+        "Membangun tata letak yang benar-benar responsif dengan breakpoint Tailwind CSS, merancang versi desktop dan mobile secara berdampingan.",
+        "Merasakan alur kerja profesional: briefing, iterasi, presentasi kepada pembimbing, dan mengubah masukan menjadi revisi.",
+      ],
+    },
   },
 
   {
@@ -199,6 +267,7 @@ const projects = [
     slug: "katalis",
 
     title: "KATALIS",
+    label: "Academic Project",
 
     category:
       "Laravel-based internship management system connecting students, supervisors, and coordinators.",
@@ -206,12 +275,12 @@ const projects = [
     color: "pink",
     logo: katalisLogo,
 
-    type: "WEB DEVELOPMENT",
+    type: "Web Development",
     year: "2024",
-    role: "FULL-STACK DEVELOPER",
+    role: "Full-Stack Developer",
 
-    client: "SOFTWARE DEVELOPMENT COURSE — UNAIR",
-    duration: "SEP – DEC 2024",
+    client: "Software Engineering Lab — UNAIR",
+    duration: "Sep – Dec 2024",
 
     overviewLead:
       "One platform connecting **students, supervisors, and coordinators** across the entire internship journey.",
@@ -263,7 +332,7 @@ const projects = [
     ],
 
     heroScreenshots: [
-      { image: katalisLogo },
+      { image: katalisLogo, fit: "contain" },
       { image: katalisDosen },
       { image: katalisUseCase, fit: "contain" },
       { image: katalisArchitecture, fit: "contain" },
@@ -339,6 +408,97 @@ const projects = [
       "Created documentation and user guides for non-technical users.",
     ],
 
+    // ---------- VERSI BAHASA INDONESIA ----------
+    indonesian: {
+      category:
+        "Sistem manajemen PKL/magang berbasis Laravel yang menghubungkan mahasiswa, dosen pembimbing, dan koordinator.",
+      label: "Proyek Kuliah",
+      type: "Pengembangan Web",
+      client: "Praktikum Rekayasa Perangkat Lunak — UNAIR",
+      duration: "Sep – Des 2024",
+      overviewLead:
+        "Satu platform yang menghubungkan **mahasiswa, dosen pembimbing, dan koordinator** di sepanjang proses magang.",
+      overview:
+        "KATALIS adalah sistem berbasis web untuk mengelola dan memantau kegiatan magang mahasiswa. Aplikasi ini menghubungkan tiga peran — Mahasiswa, Dosen Pembimbing, dan Koordinator Magang — dalam satu alur kerja terintegrasi, mulai dari pengajuan magang, bimbingan, logbook, seminar, hingga penilaian.",
+      stats: [
+        { label: "Peran pengguna dalam satu alur kerja" },
+        { label: "Menu modul dosen pembimbing yang saya bangun" },
+        { label: "Anggota tim" },
+        { label: "Teknologi yang digunakan" },
+      ],
+      problem:
+        "Administrasi magang melibatkan banyak pihak dan dokumen yang belum terintegrasi dalam satu sistem. Mahasiswa menghadapi prosedur pengajuan yang tidak jelas, dosen pembimbing dan koordinator kesulitan memantau kegiatan, dan dokumen seperti logbook, catatan bimbingan, serta laporan akhir tersebar di berbagai tempat.",
+      problemLead: "Dokumen magang **tersebar di mana-mana**.",
+      painPoints: [
+        "Mahasiswa menghadapi prosedur pengajuan yang tidak jelas.",
+        "Dosen pembimbing dan koordinator kesulitan memantau kegiatan mahasiswa.",
+        "Logbook, catatan bimbingan, dan laporan akhir tersebar di berbagai tempat.",
+      ],
+      solution:
+        "Satu sistem multi-peran di mana hasil kerja satu peran menjadi input bagi peran berikutnya — mulai dari pengajuan dan bimbingan hingga logbook, seminar, dan penilaian.",
+      contribution: [
+        "Menentukan konsep dan ruang lingkup sistem bersama tim.",
+        "Memetakan alur kerja antara Mahasiswa, Dosen Pembimbing, dan Koordinator Magang.",
+        "Menggali permasalahan nyata dalam pengelolaan magang sebagai dasar kebutuhan sistem.",
+        "Mengimplementasikan modul Dosen Pembimbing menggunakan Laravel MVC dan MySQL.",
+        "Menyusun panduan pengguna untuk Mahasiswa, Dosen Pembimbing, dan Koordinator.",
+        "Meninjau dan menyunting dokumentasi akhir proyek bersama tim.",
+      ],
+      screenshots: [
+        {
+          title: "DASHBOARD DOSEN",
+          description:
+            "Ringkasan jumlah mahasiswa bimbingan, mahasiswa aktif, validasi bimbingan yang tertunda, dan seminar yang akan datang.",
+        },
+        {
+          title: "MAHASISWA BIMBINGAN",
+          description:
+            "Daftar mahasiswa bimbingan dengan akses cepat ke detail magang, riwayat logbook, dan riwayat bimbingan.",
+        },
+        {
+          title: "DETAIL MAGANG",
+          description:
+            "Perusahaan, periode, dan dokumen yang diunggah setiap mahasiswa, dapat dilihat langsung dari modul dosen pembimbing.",
+        },
+        {
+          title: "KONSULTASI",
+          description:
+            "Dosen pembimbing meninjau konsultasi mahasiswa dan mengubah statusnya menjadi disetujui, revisi, atau menunggu persetujuan.",
+        },
+        {
+          title: "SEMINAR",
+          description:
+            "Akses ke laporan akhir magang dan input penilaian, dengan status kelulusan yang dihitung otomatis.",
+        },
+        {
+          title: "PERAN MAHASISWA",
+          description:
+            "Mahasiswa dapat melihat tenggat waktu, sisa hari magang, jumlah logbook, dan konsultasi dalam satu dashboard.",
+        },
+        {
+          title: "PERAN KOORDINATOR",
+          description:
+            "Koordinator memantau magang yang sedang berjalan dan menetapkan dosen pembimbing — melengkapi alur kerja tiga peran.",
+        },
+      ],
+      documentation: [
+        { caption: "Use case diagram — interaksi mahasiswa dan dosen pembimbing" },
+        { caption: "Arsitektur perangkat lunak secara garis besar" },
+        { caption: "Conceptual Data Model (CDM)" },
+        { caption: "Physical Data Model (PDM)" },
+        { caption: "Desain awal di Figma — aplikasi ini awalnya bernama EduWorkTrack" },
+        { caption: "Panduan pengguna untuk Mahasiswa, Dosen Pembimbing, dan Koordinator" },
+      ],
+      learning: [
+        "Merancang sistem multi-peran di mana output satu peran menjadi input bagi peran lainnya.",
+        "Menerapkan alur persetujuan (approval) dan perhitungan status otomatis.",
+        "Menerjemahkan proses kampus di dunia nyata menjadi kebutuhan sistem yang konkret.",
+        "Menentukan ruang lingkup proyek dan batasan sistem.",
+        "Berkolaborasi menggunakan Git dan GitHub.",
+        "Membuat dokumentasi dan panduan pengguna untuk pengguna non-teknis.",
+      ],
+    },
+
     github:
       "https://github.com/AgileRE-2024/KATALIS.git",
   },
@@ -348,7 +508,8 @@ const projects = [
     number: "03",
     slug: "nutrimate",
 
-    title: "NUTRIMATE",
+    title: "NutriMate",
+    label: "Academic Project",
 
     category:
       "Nutrition tracking website designed and implemented with Next.js, TypeScript, and Tailwind CSS.",
@@ -356,11 +517,11 @@ const projects = [
     color: "cream",
     logo: nmLogo,
 
-    type: "WEB DEVELOPMENT / UI-UX DESIGN",
+    type: "Web Development / UI-UX Design",
     year: "2024",
-    role: "FRONTEND DEVELOPER",
-    client: "INTERACTION DESIGN COURSE — UNAIR",
-    duration: "OCT – DEC 2024",
+    role: "Frontend Developer",
+    client: "Interaction Design Lab — UNAIR",
+    duration: "Oct – Dec 2024",
     overviewLead: "A nutrition tracker that turns **calorie counting into a few taps**.",
     overview: "NutriMate is a nutrition tracking website designed to help users monitor daily calorie and nutritional intake. Users can record consumed food, adjust portions, view nutritional information, and monitor their daily progress.",
     stats: [
@@ -428,7 +589,7 @@ const projects = [
     ],
 
       heroScreenshots: [
-      { image: nmLogo },
+      { image: nmLogo, fit: "contain" },
       { image: nmScreenFlow, fit: "contain"},
       { image: nmFigma, fit: "contain"},
     ],
@@ -504,6 +665,97 @@ const projects = [
       "Translated high-fidelity Figma designs into responsive interfaces.",
       "Collaborated with a team using Git and GitHub.",
     ],
+
+    // ---------- VERSI BAHASA INDONESIA ----------
+    indonesian: {
+      category:
+        "Website pencatat nutrisi yang dirancang dan diimplementasikan dengan Next.js, TypeScript, dan Tailwind CSS.",
+      label: "Proyek Kuliah",
+      type: "Pengembangan Web / Desain UI-UX",
+      client: "Praktikum Desain Interaksi — UNAIR",
+      duration: "Okt – Des 2024",
+      overviewLead: "Pencatat nutrisi yang mengubah **hitung kalori jadi cukup beberapa ketukan**.",
+      overview:
+        "NutriMate adalah website pencatat nutrisi yang membantu pengguna memantau asupan kalori dan nutrisi harian. Pengguna dapat mencatat makanan yang dikonsumsi, mengatur porsi, melihat informasi nutrisi, dan memantau progres harian.",
+      stats: [
+        { value: "60,7%", label: "Responden survei kesulitan menghitung kalori" },
+        { label: "Halaman frontend yang saya bangun" },
+        { label: "Anggota tim" },
+      ],
+      problem:
+        "Berdasarkan survei tim, 60,7% responden mengalami kesulitan menghitung asupan kalori dan nutrisi harian. NutriMate dirancang untuk menyederhanakan proses ini melalui perhitungan nutrisi otomatis dan rekomendasi yang dipersonalisasi.",
+      problemLead: "Menghitung kalori terasa seperti **mengerjakan soal matematika setiap makan**.",
+      painPoints: [
+        "60,7% responden survei kesulitan menghitung asupan kalori dan nutrisi harian.",
+        "Mencari informasi nutrisi setiap makanan secara manual terasa merepotkan.",
+        "Tanpa progres yang jelas, sulit untuk konsisten mencapai target nutrisi.",
+      ],
+      solution:
+        "Cari makanan, atur porsinya, dan NutriMate menghitung kalori serta nutrisinya secara otomatis — lalu memantau progres harian menuju target.",
+      contribution: [
+        "Mengimplementasikan empat halaman frontend menggunakan Next.js, TypeScript, dan Tailwind CSS.",
+        "Membangun landing page multi-section dengan animasi dan komponen interaktif.",
+        "Mengimplementasikan alur input makanan, termasuk pencarian makanan, pengaturan porsi, dan pemilihan waktu makan.",
+        "Mengembangkan tata letak responsif menggunakan grid dan breakpoint Tailwind CSS.",
+        "Menerjemahkan desain high-fidelity Figma menjadi komponen frontend yang responsif.",
+      ],
+      screenshots: [
+        {
+          description:
+            "Hero section dengan call to action yang jelas, dilengkapi animasi masuk dari Framer Motion.",
+        },
+        {
+          title: "GAYA HIDUP SEHAT",
+          description:
+            "Daftar manfaat yang dipadukan dengan grid gambar, disusun dengan grid Tailwind CSS yang responsif.",
+        },
+        {
+          title: "FITUR",
+          description:
+            "Kartu fitur interaktif yang menampilkan nutrisi harian, pelacakan kalori, peringatan, dan rekomendasi.",
+        },
+        {
+          description:
+            "Halaman login dengan opsi email dan login media sosial, diterjemahkan dari desain high-fidelity Figma.",
+        },
+        {
+          description:
+            "Form pembuatan akun dengan konfirmasi password dan persetujuan syarat dan ketentuan.",
+        },
+        {
+          description:
+            "Sapaan personal dengan ringkasan berat badan, tinggi badan, dan usia, serta tautan cepat ke jurnal makanan.",
+        },
+        {
+          title: "INPUT MAKANAN HARIAN",
+          description:
+            "Makanan dikelompokkan menjadi sarapan, makan siang, makan malam, dan camilan, dengan lingkaran kalori harian yang langsung diperbarui.",
+        },
+        {
+          title: "CARI & ATUR PORSI",
+          description:
+            "Pop-up untuk mencari makanan, mengatur ukuran porsi, dan melihat kalori serta nutrisi sebelum ditambahkan.",
+        },
+        {
+          title: "PERHITUNGAN OTOMATIS",
+          description:
+            "Setelah makanan ditambahkan, kalori, karbohidrat, protein, lemak, dan serat langsung dihitung dan lingkaran harian diperbarui.",
+        },
+      ],
+      documentation: [
+        { caption: "Survei: 60,7% responden kesulitan menghitung kalori harian" },
+        { caption: "User flow untuk mencatat asupan kalori dan nutrisi harian" },
+        { caption: "Screen flow dengan jalur utama, alternatif, dan exception" },
+        { caption: "Desain high-fidelity Figma untuk halaman Input Daily Meal" },
+      ],
+      learning: [
+        "Mengembangkan aplikasi frontend menggunakan Next.js dan TypeScript.",
+        "Menerapkan animasi dan micro-interaction menggunakan Framer Motion.",
+        "Membangun form input makanan yang kompleks dengan fitur pencarian dan perhitungan porsi.",
+        "Menerjemahkan desain high-fidelity Figma menjadi tampilan yang responsif.",
+        "Berkolaborasi dalam tim menggunakan Git dan GitHub.",
+      ],
+    },
 
     github:
       "https://github.com/sisilialeonita1384/Nutrimate.git",

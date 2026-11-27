@@ -1,55 +1,102 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const NAV_LINKS = [
-  { en: "ABOUT ME", id: "TENTANG SAYA", to: "/#about" },
-  { en: "EDUCATION", id: "PENDIDIKAN", to: "/#education" },
-  { en: "CERTIFICATIONS", id: "SERTIFIKASI", to: "/#certifications" },
-  { en: "PROJECTS", id: "PROYEK", to: "/#projects" },
+  { id: "about", en: "About", idn: "Tentang" },
+  { id: "projects", en: "Projects", idn: "Proyek" },
+  { id: "education", en: "Education", idn: "Pendidikan" },
+  { id: "certifications", en: "Certifications", idn: "Sertifikasi" },
 ];
 
-function Navbar({ lang, setLang }) {
+function Navbar({ lang = "en", setLang }) {
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState("");
+  const { pathname } = useLocation();
+
+  // tandai menu sesuai section yang sedang dibaca (hanya di beranda)
+  useEffect(() => {
+    if (pathname !== "/") {
+      setActive("");
+      return undefined;
+    }
+
+    const sections = NAV_LINKS
+      .map((link) => document.getElementById(link.id))
+      .filter(Boolean);
+
+    if (!sections.length || !("IntersectionObserver" in window)) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px" }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [pathname]);
 
   return (
     <header className="navbar">
-      <Link to="/" className="navbar-logo" onClick={() => setOpen(false)}>
-        NIBRAS<span>.</span>
-      </Link>
+      <div className="container navbar-inner">
+        <Link to="/" className="navbar-logo" onClick={() => setOpen(false)}>
+          <span className="logo-full">Nibras Zakiyya Azizah</span>
+          <span className="logo-short">Nibras Z. Azizah</span>
+        </Link>
 
-      <div className="navbar-right">
-        <nav className={`navbar-links ${open ? "is-open" : ""}`}>
-          {NAV_LINKS.map((link) => (
-            <Link key={link.to} to={link.to} onClick={() => setOpen(false)}>
-              {link[lang]}
-            </Link>
-          ))}
-        </nav>
+        <div className="navbar-right">
+          <nav
+            className={`navbar-links ${open ? "is-open" : ""}`}
+            aria-label={lang === "id" ? "Navigasi utama" : "Main navigation"}
+          >
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.id}
+                to={`/#${link.id}`}
+                className={active === link.id ? "is-active" : ""}
+                onClick={() => setOpen(false)}
+              >
+                {lang === "id" ? link.idn : link.en}
+              </Link>
+            ))}
+          </nav>
 
-        <div className="lang-switch" aria-label="Language">
+          <div className="lang-switch" role="group" aria-label="Language">
+            <button
+              type="button"
+              className={lang === "en" ? "is-active" : ""}
+              aria-pressed={lang === "en"}
+              onClick={() => setLang("en")}
+            >
+              EN
+            </button>
+            <button
+              type="button"
+              className={lang === "id" ? "is-active" : ""}
+              aria-pressed={lang === "id"}
+              onClick={() => setLang("id")}
+            >
+              ID
+            </button>
+          </div>
+
           <button
-            className={lang === "en" ? "is-active" : ""}
-            onClick={() => setLang("en")}
+            type="button"
+            className={`navbar-toggle ${open ? "is-open" : ""}`}
+            onClick={() => setOpen(!open)}
+            aria-label="Menu"
+            aria-expanded={open}
           >
-            EN
-          </button>
-          <button
-            className={lang === "id" ? "is-active" : ""}
-            onClick={() => setLang("id")}
-          >
-            ID
+            <span></span>
+            <span></span>
+            <span></span>
           </button>
         </div>
-
-        <button
-          className={`navbar-toggle ${open ? "is-open" : ""}`}
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
       </div>
     </header>
   );

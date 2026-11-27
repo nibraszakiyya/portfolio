@@ -1,13 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-
-import {
-  Link,
-  useParams,
-} from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { Link, useParams } from "react-router-dom";
 
 import projects from "../data/projects";
 
 
+/* teks **tebal** di projects.js diberi warna aksen */
 function renderHighlight(text = "") {
   return text.split(/\*\*(.*?)\*\*/).map((part, i) =>
     i % 2 === 1 ? <mark key={i}>{part}</mark> : part
@@ -15,25 +12,108 @@ function renderHighlight(text = "") {
 }
 
 
-function ProjectDetail() {
+/* =========================
+   LABEL DUA BAHASA (EN / ID)
+========================= */
+const TEXT = {
+  en: {
+    back: "← Back to projects",
+    source: "View source code on GitHub ↗",
+    notFound: "Project not found",
+    caseStudy: "Case study",
+    overview: "Overview",
+    problem: "Problem & solution",
+    before: "Before",
+    after: "After",
+    solutionTitle: "The solution",
+    skills: "Technologies",
+    contribution: "My contribution",
+    features: "Key features",
+    documentation: "Documentation",
+    learning: "What I learned",
+    next: "Next project",
+    viewCase: "View case study →",
+    meta: { role: "Role", client: "Client", year: "Year", duration: "Duration", type: "Type" },
+    slide: "Show image",
+  },
+  id: {
+    back: "← Kembali ke proyek",
+    source: "Lihat source code di GitHub ↗",
+    notFound: "Proyek tidak ditemukan",
+    caseStudy: "Studi kasus",
+    overview: "Gambaran umum",
+    problem: "Masalah & solusi",
+    before: "Sebelum",
+    after: "Sesudah",
+    solutionTitle: "Solusinya",
+    skills: "Teknologi",
+    contribution: "Kontribusi saya",
+    features: "Fitur utama",
+    documentation: "Dokumentasi",
+    learning: "Yang saya pelajari",
+    next: "Proyek berikutnya",
+    viewCase: "Lihat studi kasus →",
+    meta: { role: "Peran", client: "Klien", year: "Tahun", duration: "Durasi", type: "Jenis" },
+    slide: "Tampilkan gambar",
+  },
+};
 
+
+/* Gabungkan teks Indonesia (project.indonesian) ke data proyek.
+   Bagian yang belum diterjemahkan otomatis memakai versi Inggris.
+   Untuk daftar berisi gambar (screenshots, documentation, stats),
+   teks digabung per urutan sehingga gambarnya tetap sama. */
+function localizeProject(project, lang) {
+  if (!project || lang !== "id" || !project.indonesian) return project;
+
+  const merged = { ...project };
+
+  Object.entries(project.indonesian).forEach(([key, value]) => {
+    const base = project[key];
+    const isObjectList =
+      Array.isArray(value) &&
+      Array.isArray(base) &&
+      base.some((item) => item && typeof item === "object");
+
+    merged[key] = isObjectList
+      ? base.map((item, index) => ({ ...item, ...(value[index] || {}) }))
+      : value;
+  });
+
+  return merged;
+}
+
+
+function stackName(tech) {
+  return typeof tech === "string" ? tech : tech.name;
+}
+
+
+function ProjectDetail({ lang = "en" }) {
   const { id } = useParams();
+  const t = TEXT[lang] || TEXT.en;
 
-  const project = projects.find(
-    (project) => project.number === id
+  const index = projects.findIndex((item) => item.number === id);
+  const baseProject = index >= 0 ? projects[index] : null;
+  const nextProject = index >= 0 ? projects[(index + 1) % projects.length] : null;
+
+  const project = useMemo(
+    () => localizeProject(baseProject, lang),
+    [baseProject, lang]
   );
 
   // ---------- DATA (aman walau kosong) ----------
   const screenshots = project?.screenshots || [];
-  const heroSlides = project?.heroScreenshots || screenshots;
+  const heroSlides = project?.heroScreenshots || screenshots.slice(0, 4);
   const documentation = project?.documentation || [];
   const stack = project?.stack || [];
   const contribution = project?.contribution || [];
   const learning = project?.learning || [];
   const painPoints = project?.painPoints || [];
+  const stats = project?.stats || [];
 
 
-  // ---------- SLIDESHOW ----------
+  // ---------- SLIDESHOW HERO ----------
   const [activeSlide, setActiveSlide] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -42,206 +122,164 @@ function ProjectDetail() {
   }, [id]);
 
   useEffect(() => {
-    if (heroSlides.length <= 1 || paused) return;
+    if (heroSlides.length <= 1 || paused) return undefined;
 
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 2500);
+    }, 3500);
 
     return () => clearInterval(interval);
   }, [heroSlides.length, paused]);
 
 
-  // ---------- ANIMASI SKILLS ----------
-  const stackRef = useRef(null);
-  const [stackVisible, setStackVisible] = useState(false);
-
+  // ---------- ANIMASI MUNCUL SAAT SCROLL ----------
   useEffect(() => {
-    setStackVisible(false);
+    const items = document.querySelectorAll(".reveal, .pd-stack");
 
-    const el = stackRef.current;
-    if (!el) return;
+    if (!("IntersectionObserver" in window)) {
+      items.forEach((item) => item.classList.add("is-visible"));
+      return undefined;
+    }
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setStackVisible(true);
-          observer.disconnect();
-        }
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
       },
-      { threshold: 0.3 }
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
 
-    observer.observe(el);
+    items.forEach((item) => observer.observe(item));
     return () => observer.disconnect();
-  }, [project]);
+  }, [id]);
 
 
   if (!project) {
-
     return (
-      <main className="project-detail">
-
-        <div className="project-detail-top">
-
-          <Link
-            to="/#projects"
-            className="project-back"
-          >
-            ← BACK TO PROJECTS
-          </Link>
-
-        </div>
-
-        <div className="project-not-found">
-
-          <p>404</p>
-
-          <h1>
-            PROJECT NOT FOUND
-          </h1>
-
-        </div>
-
+      <main className="pd-not-found">
+        <h1>{t.notFound}</h1>
+        <Link to="/#projects" className="btn btn-primary">
+          {t.back}
+        </Link>
       </main>
     );
-
   }
 
 
+  const meta = [
+    [t.meta.role, project.role],
+    [t.meta.client, project.client],
+    [t.meta.year, project.year],
+    [t.meta.duration, project.duration],
+    [t.meta.type, project.type],
+  ].filter(([, value]) => value);
 
 
   return (
+    <main>
 
-    <main
-      className={`project-detail ${project.color}`}
-      style={{ "--hero-img-ratio": project.heroRatio }}
-    >
+      {/* ===== JUDUL & HERO ===== */}
+      <section className="pd-top">
+        <div className="container">
+          <div className="pd-actions">
+            <Link to="/#projects" className="pd-back">
+              {t.back}
+            </Link>
 
-
-      {/* BACK */}
-
-      <div className="project-detail-top">
-
-        <Link
-          to="/#projects"
-          className="project-back"
-        >
-          ← BACK TO PROJECTS
-        </Link>
-
-        {project.github && (
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noreferrer"
-            className="project-back project-back-github"
-          >
-            VIEW SOURCE CODE ↗
-          </a>
-        )}
-
-      </div>
-
-
-
-      {/* HERO */}
-
-    <section className="project-hero">
-
-      <div className="project-hero-content">
-
-        <div className="project-hero-number">
-          {project.number}
-        </div>
-
-        <p className="project-hero-type">
-          {project.type} · {project.year}
-        </p>
-
-        <h1>
-          {project.title}
-        </h1>
-
-        <p className="project-hero-description">
-          {project.category}
-        </p>
-
-      </div>
-
-
-      {/* PROJECT SLIDESHOW */}
-
-      {heroSlides.length > 0 && (
-
-        <div className="project-hero-gallery">
-
-          <div
-            className="project-image-stack"
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-          >
-
-            <div className="stack-image stack-image-2" />
-            <div className="stack-image stack-image-1" />
-
-            <div className="stack-image stack-image-0">
-              {heroSlides.map((item, index) => (
-                <img
-                  key={index}
-                  src={item.image}
-                  alt={`${project.title} preview ${index + 1}`}
-                  className={`stack-slide ${index === activeSlide ? "is-active" : ""}`}
-                />
-              ))}
-            </div>
-
-          </div>
-
-          <div className="gallery-counter">
-
-            <span>
-              {String(activeSlide + 1).padStart(2, "0")}
-            </span>
-
-            <span className="gallery-counter-line"></span>
-
-            <span>
-              {String(heroSlides.length).padStart(2, "0")}
-            </span>
-
-          </div>
-
-        </div>
-
-      )}
-
-    </section>
-
-
-
-      {/* OVERVIEW */}
-
-      <section className="project-overview">
-
-        <div className="detail-section-label">OVERVIEW</div>
-
-        <div className="project-overview-grid">
-
-          <div>
-            {project.overviewLead ? (
-              <>
-                <p className="overview-lead">{renderHighlight(project.overviewLead)}</p>
-                <p className="overview-body">{project.overview}</p>
-              </>
-            ) : (
-              <p className="detail-large-text">{project.overview}</p>
+            {project.github && (
+              <a href={project.github} target="_blank" rel="noreferrer" className="pd-github">
+                {t.source}
+              </a>
             )}
+          </div>
 
-            {project.stats && (
-              <div className="overview-stats">
-                {project.stats.map((stat) => (
-                  <div className="stat-item" key={stat.label}>
+          <p className="section-label pd-eyebrow hero-anim" style={{ "--d": 0 }}>
+            {t.caseStudy} · {project.label}
+          </p>
+          <h1 className="hero-anim" style={{ "--d": 1 }}>{project.title}</h1>
+          <p className="pd-lead hero-anim" style={{ "--d": 2 }}>{project.category}</p>
+
+          <div className="pd-meta hero-anim" style={{ "--d": 3 }}>
+            {meta.map(([label, value]) => (
+              <div key={label}>
+                <span>{label}</span>
+                <strong>{value}</strong>
+              </div>
+            ))}
+          </div>
+
+          {heroSlides.length > 0 && (
+            <div
+              className="hero-anim"
+              style={{ "--d": 4 }}
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+            >
+              <div className="browser">
+                <div className="browser-bar" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <div
+                  className="browser-view"
+                  style={project.heroRatio ? { "--hero-ratio": project.heroRatio } : undefined}
+                >
+                  {heroSlides.map((item, i) => (
+                    <img
+                      key={item.image}
+                      src={item.image}
+                      alt={item.title || `${project.title} ${i + 1}`}
+                      className={i === activeSlide ? "is-active" : ""}
+                      style={{
+                        objectFit: item.fit || "cover",
+                        objectPosition: item.fit === "contain" ? "center" : "top",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {heroSlides.length > 1 && (
+                <div className="slide-dots">
+                  {heroSlides.map((item, i) => (
+                    <button
+                      key={item.image}
+                      type="button"
+                      className={i === activeSlide ? "is-active" : ""}
+                      aria-label={`${t.slide} ${i + 1}`}
+                      onClick={() => setActiveSlide(i)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+
+      {/* ===== OVERVIEW ===== */}
+      <section className="section">
+        <div className="container pd-row">
+          <div className="pd-row-label reveal">
+            <p className="section-label">{t.overview}</p>
+          </div>
+
+          <div className="pd-row-body reveal" style={{ "--d": 1 }}>
+            {project.overviewLead && (
+              <p className="pd-overview-lead">{renderHighlight(project.overviewLead)}</p>
+            )}
+            {project.overview && <p className="pd-overview-body">{project.overview}</p>}
+
+            {stats.length > 0 && (
+              <div className="pd-stats">
+                {stats.map((stat) => (
+                  <div className="card" key={stat.label}>
                     <strong>{stat.value}</strong>
                     <span>{stat.label}</span>
                   </div>
@@ -249,45 +287,22 @@ function ProjectDetail() {
               </div>
             )}
           </div>
-
-          <div className="project-meta">
-            {[
-              ["ROLE", project.role],
-              ["CLIENT", project.client],
-              ["YEAR", project.year],
-              ["DURATION", project.duration],
-              ["TYPE", project.type],
-            ]
-              .filter(([, value]) => value)
-              .map(([label, value]) => (
-                <div className="meta-item" key={label}>
-                  <span>{label}</span>
-                  <strong>{value}</strong>
-                </div>
-              ))}
-          </div>
-
         </div>
-
       </section>
 
 
+      {/* ===== PROBLEM & SOLUTION ===== */}
+      {(painPoints.length > 0 || project.solution) && (
+        <section className="section section-white">
+          <div className="container pd-row">
+            <div className="pd-row-label reveal">
+              <p className="section-label">{t.problem}</p>
+            </div>
 
-      {/* PROBLEM */}
-
-      <section className="project-problem">
-
-        <div className="detail-section-label">THE PROBLEM</div>
-
-        {project.problemLead ? (
-          <div className="problem-grid">
-
-            <p className="problem-lead">{renderHighlight(project.problemLead)}</p>
-
-            <div className="problem-flow">
-
-              <div className="problem-card">
-                <span className="problem-tag">BEFORE</span>
+            <div className="pd-row-body pd-problem">
+              <div className="pd-problem-card reveal">
+                <p className="pd-problem-tag">{t.before}</p>
+                {project.problemLead && <h3>{renderHighlight(project.problemLead)}</h3>}
                 <ul>
                   {painPoints.map((point) => (
                     <li key={point}>{point}</li>
@@ -295,237 +310,148 @@ function ProjectDetail() {
                 </ul>
               </div>
 
-              <div className="problem-arrow">↓</div>
+              {project.solution && (
+                <div className="pd-problem-card is-after reveal" style={{ "--d": 1 }}>
+                  <p className="pd-problem-tag">{t.after}</p>
+                  <h3>{t.solutionTitle}</h3>
+                  <p>{project.solution}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
-              <div className="problem-card problem-card-solution">
-                <span className="problem-tag">AFTER</span>
-                <p>{project.solution}</p>
-              </div>
 
+      {/* ===== CONTRIBUTION ===== */}
+      {contribution.length > 0 && (
+        <section className="section">
+          <div className="container pd-row">
+            <div className="pd-row-label reveal">
+              <p className="section-label">{t.contribution}</p>
             </div>
 
-          </div>
-        ) : (
-          <p className="detail-large-text">{project.problem}</p>
-        )}
-
-      </section>
-
-
-
-      {/* TECHNOLOGY */}
-
-      {stack.length > 0 && (
-      <section className="project-stack">
-
-        <div className="detail-section-label">
-          SKILLS
-        </div>
-
-
-        <div
-          ref={stackRef}
-          className={`stack-list ${stackVisible ? "is-visible" : ""}`}
-        >
-          {stack.map((technology, index) => (
-            <span key={technology} style={{ "--i": index }}>
-              {technology}
-            </span>
-          ))}
-        </div>
-
-      </section>
-      )}
-
-
-
-      {/* CONTRIBUTION */}
-
-      {contribution.length > 0 && (
-      <section className="project-contribution">
-
-        <div className="detail-section-label">
-          MY CONTRIBUTION
-        </div>
-
-
-        <div className="contribution-list">
-
-          {contribution.map(
-            (item, index) => (
-
-              <div
-                className="contribution-item"
-                key={index}
-              >
-
-                <span>
-                  {String(index + 1).padStart(
-                    2,
-                    "0"
-                  )}
-                </span>
-
-                <p>
+            <ol className="pd-row-body pd-list reveal" style={{ "--d": 1 }}>
+              {contribution.map((item, i) => (
+                <li key={item}>
+                  <span>{String(i + 1).padStart(2, "0")}</span>
                   {item}
-                </p>
-
-              </div>
-
-            )
-          )}
-
-        </div>
-
-      </section>
-      )}
-
-
-
-      {/* KEY FEATURES + SCREENSHOTS */}
-
-      {screenshots.length > 0 && (
-
-        <section className="project-gallery">
-
-          <div className="detail-section-label">
-            KEY FEATURES
+                </li>
+              ))}
+            </ol>
           </div>
-
-          <div className="screenshot-list">
-
-            {screenshots.map((item, index) => (
-
-              <figure className="screenshot-item" key={index}>
-
-                <div className="screenshot-frame">
-                  <img
-                    src={item.image}
-                    alt={item.title || `${project.title} screenshot ${index + 1}`}
-                    style={{ objectFit: item.fit || "cover" }}
-                  />
-                </div>
-
-                <figcaption>
-
-                  <span className="screenshot-number">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
-                  <div className="screenshot-text">
-                    <h3>{item.title || item.caption}</h3>
-                    {item.description && <p>{item.description}</p>}
-                  </div>
-
-                </figcaption>
-
-              </figure>
-
-            ))}
-
-          </div>
-
         </section>
-
       )}
 
 
+      {/* ===== TECHNOLOGIES ===== */}
+      {stack.length > 0 && (
+        <section className="section section-white">
+          <div className="container pd-row">
+            <div className="pd-row-label reveal">
+              <p className="section-label">{t.skills}</p>
+            </div>
 
-      {/* DOCUMENTATION */}
-
-      {documentation.length > 0 && (
-      <section className="project-documentation">
-
-        <div className="detail-section-label">
-          DOCUMENTATION
-        </div>
-
-
-        <div className="documentation-grid">
-
-          {documentation.map(
-            (item, index) => (
-
-              <figure
-                className="documentation-item"
-                key={item.image}
-              >
-
-                <img
-                  src={item.image}
-                  alt={`${project.title} documentation ${
-                    index + 1
-                  }`}
-                />
-
-                <figcaption>
-
-                  <span>
-                    {String(index + 1).padStart(
-                      2,
-                      "0"
-                    )}
-                  </span>
-
-                  {item.caption}
-
-                </figcaption>
-
-              </figure>
-
-            )
-          )}
-
-        </div>
-
-      </section>
-      )}
-
-
-
-      {/* LEARNING */}
-
-      {learning.length > 0 && (
-      <section className="project-learning">
-
-        <div className="detail-section-label">
-          WHAT I LEARNED
-        </div>
-
-
-        <div className="learning-list">
-
-          {learning.map(
-            (item, index) => (
-
-              <div
-                className="learning-item"
-                key={index}
-              >
-
-                <span>
-                  {String(index + 1).padStart(
-                    2,
-                    "0"
-                  )}
+            <div className="pd-row-body pd-stack">
+              {stack.map((tech, i) => (
+                <span key={stackName(tech)} style={{ "--i": i }}>
+                  {stackName(tech)}
                 </span>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
-                <p>
+
+      {/* ===== KEY FEATURES ===== */}
+      {screenshots.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <p className="section-label reveal">{t.features}</p>
+
+            <div className="pd-gallery">
+              {screenshots.map((item, i) => (
+                <figure className="pd-figure reveal" style={{ "--d": i % 2 }} key={item.image}>
+                  <div className={`pd-figure-image ${item.fit === "contain" ? "is-contain" : ""}`}>
+                    <img src={item.image} alt={item.title || project.title} loading="lazy" />
+                  </div>
+                  {(item.title || item.description) && (
+                    <figcaption>
+                      {item.title && <h3>{item.title}</h3>}
+                      {item.description && <p>{item.description}</p>}
+                    </figcaption>
+                  )}
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+
+      {/* ===== DOCUMENTATION ===== */}
+      {documentation.length > 0 && (
+        <section className="section section-white">
+          <div className="container">
+            <p className="section-label reveal">{t.documentation}</p>
+
+            <div className="pd-gallery">
+              {documentation.map((item, i) => (
+                <figure className="pd-figure reveal" style={{ "--d": i % 2 }} key={item.image}>
+                  <div className={`pd-figure-image ${item.fit === "contain" ? "is-contain" : ""}`}>
+                    <img src={item.image} alt={item.caption || project.title} loading="lazy" />
+                  </div>
+                  {item.caption && (
+                    <figcaption>
+                      <p>{item.caption}</p>
+                    </figcaption>
+                  )}
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+
+      {/* ===== LEARNING ===== */}
+      {learning.length > 0 && (
+        <section className="section">
+          <div className="container pd-row">
+            <div className="pd-row-label reveal">
+              <p className="section-label">{t.learning}</p>
+            </div>
+
+            <ul className="pd-row-body pd-learning">
+              {learning.map((item, i) => (
+                <li className="card reveal" style={{ "--d": i % 3 }} key={item}>
+                  <span>{String(i + 1).padStart(2, "0")}</span>
                   {item}
-                </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
-              </div>
 
-            )
-          )}
-
-        </div>
-
-      </section>
+      {/* ===== NEXT PROJECT ===== */}
+      {nextProject && nextProject.number !== project.number && (
+        <section className="pd-next">
+          <div className="container">
+            <div>
+              <span>{t.next}</span>
+              <h2>{nextProject.title}</h2>
+            </div>
+            <Link to={`/projects/${nextProject.number}`} className="btn btn-primary">
+              {t.viewCase}
+            </Link>
+          </div>
+        </section>
       )}
 
     </main>
-
   );
 }
 

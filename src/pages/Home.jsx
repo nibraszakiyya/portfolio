@@ -1,103 +1,195 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import projects from "../data/projects";
-import { useState } from "react";
 
 const CV_URL = "/cv/Nibras_Zakiyya_Azizah_CV.pdf";
 const EMAIL = "nibrszkzh@gmail.com";
+const PHOTO = "/IMG_3470_d_crop-removebg-preview.png";
 
 const SOCIALS = [
-  { label: "GitHub", href: "https://github.com/nibraszakiyya", icon: "github" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/nibras-zakiyya-azizah", icon: "linkedin" },
-  { label: "WhatsApp", href: "https://wa.me/6281212768781?", icon: "whatsapp"},
-  { label: "Email", href: `mailto:${EMAIL}`, icon: "mail" },
+  { label: "GitHub ↗", href: "https://github.com/nibraszakiyya" },
+  { label: "LinkedIn ↗", href: "https://linkedin.com/in/nibras-zakiyya-azizah" },
+  { label: "WhatsApp ↗", href: "https://wa.me/6281212768781?text=Hi%20Nibras%2C%20I%20saw%20your%20portfolio" },
 ];
 
-const EYEBROW = "FRESH GRADUATE · INFORMATION SYSTEMS · UNIVERSITAS AIRLANGGA · ";
+/* =========================
+   TEKS DUA BAHASA (EN / ID)
+   Ubah kalimat di sini, bukan di dalam JSX.
+========================= */
+const TEXT = {
+  en: {
+    status: "Open to full-time roles · Greater Jakarta",
+    heroTitle: ["Web Developer &", "System Analyst"],
+    heroDescription:
+      "I'm Nibras, an Information Systems graduate from Universitas Airlangga. I analyze what a system needs, then build it into web applications with Laravel and Next.js.",
+    viewProjects: "View Projects",
+    downloadCv: "Download CV",
+    photoAlt: "Photo of Nibras Zakiyya Azizah",
 
-function SocialIcon({ name }) {
-  if (name === "github") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" />
-      </svg>
-    );
-  }
-  if (name === "linkedin") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <rect x="3" y="3" width="18" height="18" rx="3" />
-        <path d="M8 11v5M8 8v.01M12 16v-5M16 16v-3a2 2 0 0 0-4 0" />
-      </svg>
-    );
-  }
-  if (name === "whatsapp") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
-        <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1" />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="m3 7 9 6 9-6" />
-    </svg>
-  );
-}
+    stats: {
+      gpa: ["3.40", "GPA out of 4.00"],
+      projects: "Web projects (internship & academic)",
+      certs: "Certifications",
+      toefl: "TOEFL score",
+    },
+
+    aboutLabel: "About Me",
+    aboutTitle: "Bridging business needs and technical solutions.",
+    aboutText:
+      "I built my foundation through an internship and academic projects: analyzing requirements, designing databases, and developing web applications. I learn fast, enjoy working in teams, and I'm ready to grow in a professional environment.",
+    analyzeTitle: "Systems Analysis",
+    analyzeList: [
+      "Requirements & scope",
+      "Use cases & business processes",
+      "Database design (CDM/PDM)",
+      "Documentation & user guides",
+    ],
+    buildTitle: "Web Development",
+    buildList: [
+      "Laravel (MVC, Eloquent)",
+      "Next.js, React, TypeScript",
+      "Tailwind CSS, responsive UI",
+      "Admin dashboards & CRUD",
+    ],
+
+    workLabel: "Selected Work",
+    workTitle: "Case studies",
+    workIntro:
+      "Three projects from my internship and coursework, from requirements analysis to working applications.",
+
+    eduLabel: "Education & Organization",
+    eduTitle: "Background",
+    degree: "Bachelor of Information Systems · Faculty of Science and Technology",
+    gpaText: "GPA 3.40 / 4.00",
+    thesisLabel: "Undergraduate Thesis",
+    thesisTitle:
+      "Forecasting Indonesia's Annual Rice Production Using LSTM with Transfer Learning on Multivariate Low-Frequency Time Series",
+    thesisSummary:
+      "Compared XGBoost, LSTM, and LSTM with transfer learning against an ARIMA baseline using 66 years of USDA data (1960–2025). XGBoost delivered the most accurate and stable predictions for this small annual dataset.",
+    thesisStats: [
+      ["1.33%", "Best MAPE"],
+      ["0.826", "R² score"],
+      ["66", "Years of data"],
+    ],
+    orgRole: "Expert Staff · Entrepreneurship and Inventory Division",
+    orgList: [
+      "Managed inventory records, equipment lending logs, and transaction documentation to keep administrative data accurate.",
+      "Coordinated with vendors and internal divisions on procuring and selling association merchandise.",
+      "Supported budgeting and reporting through organized sales and inventory records.",
+    ],
+
+    certLabel: "Certifications",
+    certTitle: "Credentials",
+    view: "View ↗",
+    hkiTitle: "Intellectual Property:",
+    hkiText: "contributor to 3 registered copyright works for MSME and Islamic business training",
+  },
+
+  id: {
+    status: "Terbuka untuk posisi full-time · Jabodetabek",
+    heroTitle: ["Web Developer &", "System Analyst"],
+    heroDescription:
+      "Saya Nibras, fresh graduate Sistem Informasi Universitas Airlangga. Saya menganalisis kebutuhan sistem lalu membangunnya menjadi aplikasi web dengan Laravel dan Next.js.",
+    viewProjects: "Lihat Proyek",
+    downloadCv: "Unduh CV",
+    photoAlt: "Foto Nibras Zakiyya Azizah",
+
+    stats: {
+      gpa: ["3,40", "IPK dari 4,00"],
+      projects: "Proyek web (magang & kuliah)",
+      certs: "Sertifikasi",
+      toefl: "Skor TOEFL",
+    },
+
+    aboutLabel: "Tentang Saya",
+    aboutTitle: "Menjembatani kebutuhan bisnis dan solusi teknis.",
+    aboutText:
+      "Saya membangun dasar kemampuan melalui magang dan proyek perkuliahan: menganalisis kebutuhan, merancang database, dan mengembangkan aplikasi web. Saya cepat belajar, senang bekerja dalam tim, dan siap berkembang di lingkungan profesional.",
+    analyzeTitle: "Analisis Sistem",
+    analyzeList: [
+      "Analisis kebutuhan & ruang lingkup",
+      "Use case & proses bisnis",
+      "Database design (CDM/PDM)",
+      "Dokumentasi & user guide",
+    ],
+    buildTitle: "Pengembangan Web",
+    buildList: [
+      "Laravel (MVC, Eloquent)",
+      "Next.js, React, TypeScript",
+      "Tailwind CSS, responsif",
+      "Dashboard admin & CRUD",
+    ],
+
+    workLabel: "Proyek Pilihan",
+    workTitle: "Studi kasus",
+    workIntro:
+      "Tiga proyek dari magang dan perkuliahan, dari analisis kebutuhan hingga aplikasi yang berjalan.",
+
+    eduLabel: "Pendidikan & Organisasi",
+    eduTitle: "Latar belakang",
+    degree: "Sarjana Sistem Informasi · Fakultas Sains dan Teknologi",
+    gpaText: "IPK 3,40 / 4,00",
+    thesisLabel: "Skripsi",
+    thesisTitle:
+      "Prediksi Produksi Beras Tahunan Indonesia Menggunakan LSTM dengan Transfer Learning pada Data Multivariate Low-Frequency Time Series",
+    thesisSummary:
+      "Membandingkan XGBoost, LSTM, dan LSTM dengan transfer learning terhadap baseline ARIMA menggunakan data USDA selama 66 tahun (1960–2025). XGBoost menghasilkan prediksi paling akurat dan stabil untuk dataset tahunan yang kecil ini.",
+    thesisStats: [
+      ["1,33%", "MAPE terbaik"],
+      ["0,826", "Skor R²"],
+      ["66", "Tahun data"],
+    ],
+    orgRole: "Staf Ahli · Divisi Kewirausahaan dan Inventaris",
+    orgList: [
+      "Mengelola catatan inventaris, log peminjaman alat, dan dokumentasi transaksi agar data administrasi tetap akurat.",
+      "Berkoordinasi dengan vendor dan divisi internal untuk pengadaan dan penjualan merchandise himpunan.",
+      "Mendukung penganggaran dan pelaporan melalui pencatatan penjualan dan inventaris yang rapi.",
+    ],
+
+    certLabel: "Sertifikasi",
+    certTitle: "Kredensial",
+    view: "Lihat ↗",
+    hkiTitle: "Hak Kekayaan Intelektual:",
+    hkiText: "kontributor 3 karya hak cipta terdaftar untuk pelatihan UMKM dan bisnis syariah",
+  },
+};
+
+const TOEFL = "593";
 
 const CERTIFICATIONS = [
   {
-    title: "React JS Web Frontend",
-    issuer: "Sanbercode",
-    initials: "SB",
-    badgeColor: "var(--purple)",
-    logo: "",
-    date: "Jul 2023",
-    link: "https://sanbercode.com/certificate/in/ac07f35f-0ad3-488f-aff9-5aff6a4d4292",
-  },
-  {
     title: "Data Classification and Summarization Using IBM Granite",
     issuer: "IBM SkillsBuild",
-    initials: "IBM",
-    badgeColor: "var(--pink)",
-    logo: "",
-    date: "Oct 2025",
+    date: { en: "Oct 2025", id: "Okt 2025" },
     link: "/certificates/ibm-granite.pdf",
   },
   {
     title: "Belajar Dasar AI",
     issuer: "Dicoding",
-    initials: "D",
-    badgeColor: "#fff",
-    logo: "",
-    date: "Aug 2026 · valid until Aug 2029",
+    date: { en: "Aug 2026 · valid until Aug 2029", id: "Agu 2026 · berlaku hingga Agu 2029" },
     link: "https://www.dicoding.com/certificates/72ZDMQOYQZYW",
+  },
+  {
+    title: "React JS Web Frontend",
+    issuer: "Sanbercode",
+    date: "Jul 2023",
+    link: "https://sanbercode.com/certificate/in/ac07f35f-0ad3-488f-aff9-5aff6a4d4292",
   },
   {
     title: "Introduction to Financial Literacy",
     issuer: "Dicoding",
-    initials: "D",
-    badgeColor: "#fff",
-    logo: "",
-    date: "Aug 2026 · valid until Aug 2029",
+    date: { en: "Aug 2026 · valid until Aug 2029", id: "Agu 2026 · berlaku hingga Agu 2029" },
     link: "https://www.dicoding.com/certificates/JMZVLQGDOXN9",
   },
   {
     title: "NDG Linux Essentials",
-    issuer: "Cisco NetAcad",
-    initials: "C",
-    badgeColor: "#fff",
-    logo: "",
+    issuer: "Cisco Networking Academy",
     date: "2023",
     link: "/certificates/cisco-linux.pdf",
   },
   {
     title: "NDG Linux Unhatched",
-    issuer: "Cisco NetAcad",
-    initials: "C",
-    badgeColor: "#fff",
-    logo: "",
+    issuer: "Cisco Networking Academy",
     date: "2023",
     link: "/certificates/cisco-unhatched.pdf",
   },
@@ -105,7 +197,7 @@ const CERTIFICATIONS = [
 
 const HKI = {
   issuer: "Universitas YARSI",
-  date: "Oct 2025",
+  date: { en: "Oct 2025", id: "Okt 2025" },
   items: [
     {
       title: "Modul Business Plan UMKM Syariah",
@@ -122,461 +214,305 @@ const HKI = {
   ],
 };
 
-function Home() {
-  const [eduOpen, setEduOpen] = useState(false);
+/* teks yang berbeda per bahasa ditulis { en: "...", id: "..." } */
+function tr(value, lang) {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value[lang] || value.en;
+  }
+  return value;
+}
+
+/* ambil teks proyek sesuai bahasa (bagian `indonesian` di projects.js) */
+function projectText(project, key, lang) {
+  if (lang === "id" && project.indonesian && project.indonesian[key]) {
+    return project.indonesian[key];
+  }
+  return project[key];
+}
+
+function projectCover(project) {
+  const first = (project.screenshots || [])[0];
+  return project.cover || (first && first.image) || project.logo;
+}
+
+function stackName(tech) {
+  return typeof tech === "string" ? tech : tech.name;
+}
+
+/* animasi muncul saat di-scroll: elemen dengan class "reveal" */
+function useReveal() {
+  useEffect(() => {
+    const items = document.querySelectorAll(".reveal");
+
+    if (!("IntersectionObserver" in window)) {
+      items.forEach((item) => item.classList.add("is-visible"));
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    items.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, []);
+}
+
+function Home({ lang = "en" }) {
+  const t = TEXT[lang] || TEXT.en;
+  useReveal();
+
   return (
     <main>
-
-      {/* ================= HERO ================= */}
-      <section className="hero" id="home">
-
-        <span className="hero-decoration decoration-one">✕</span>
-        <span className="hero-decoration decoration-two">✱</span>
-        <span className="hero-decoration decoration-three">↗</span>
-        <span className="hero-decoration decoration-four">+</span>
-
-        <div className="hero-layout">
-
-          {/* KIRI */}
-          <div className="hero-main">
-            <div className="hero-name-block">
-
-            <div className="eyebrow">
-              <div className="eyebrow-track">
-                <span>{EYEBROW}</span>
-                <span aria-hidden="true">{EYEBROW}</span>
-              </div>
+      {/* ===== HERO ===== */}
+      <section className="hero" id="top">
+        <div className="container hero-inner">
+          <div className="hero-content">
+            <div className="hero-status hero-anim" style={{ "--d": 0 }}>
+              <span className="status-dot" />
+              {t.status}
             </div>
 
-            <h1 className="hero-title" aria-label="Nibras">
-              {"NIBRAS".split("").map((letter, index) => (
-                <span
-                  key={index}
-                  className="hero-letter"
-                  style={{ "--i": index }}
-                >
-                  {letter}
-                </span>
-              ))}
+            <h1 className="hero-anim" style={{ "--d": 1 }}>
+              {t.heroTitle[0]}
+              <br />
+              {t.heroTitle[1]}
             </h1>
-            </div>
 
-            <p className="hero-subname">ZAKIYYA AZIZAH</p>
-
-            <span className="hero-role">WEB DEVELOPER · SYSTEM ANALYST</span>
-
-            <p className="hero-description">
-              Information Systems fresh graduate who can both analyze what a
-              system needs and build it — from use cases and data models to
-              working Laravel and Next.js apps.
+            <p className="hero-description hero-anim" style={{ "--d": 2 }}>
+              {t.heroDescription}
             </p>
 
-            <div className="hero-cta">
-
-              <a
-                href={CV_URL}
-                download
-                className="hero-button hero-button-primary"
-                style={{ "--button-index": 0 }}
-              >
-                DOWNLOAD CV ↓
+            <div className="hero-actions hero-anim" style={{ "--d": 3 }}>
+              <a href="#projects" className="btn btn-primary">
+                {t.viewProjects}
               </a>
-
-              <a
-                href="#projects"
-                className="hero-button hero-button-purple"
-                style={{ "--button-index": 1 }}
-              >
-                VIEW PROJECTS
+              <a href={CV_URL} download className="btn btn-outline">
+                {t.downloadCv}
               </a>
-
-              <div className="hero-social">
-                {SOCIALS.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target={item.icon === "mail" ? undefined : "_blank"}
-                    rel="noreferrer"
-                    aria-label={item.label}
-                  >
-                    <SocialIcon name={item.icon} />
-                  </a>
-                ))}
-              </div>
-
             </div>
 
-          </div>
-
-          {/* KANAN */}
-          <div className="hero-side">
-
-            <div className="hero-status">
-              <strong>
-                <span className="status-dot" /> OPEN TO WORK
-              </strong>
-              <span>Entry-level</span>
-              <span>Jabodetabek</span>
-            </div>
-
-            <nav className="hero-nav">
-              {[
-                ["ABOUT ME", "#about"],
-                ["EDUCATION", "#education"],
-                ["CERTIFICATIONS", "#certifications"],
-              ].map(([label, href], index) => (
-                <a
-                  key={label}
-                  href={href}
-                  className="hero-button"
-                  style={{ "--button-index": index + 2 }}
-                >
-                  {label}
+            <div className="hero-links hero-anim" style={{ "--d": 4 }}>
+              {SOCIALS.map((social) => (
+                <a key={social.href} href={social.href} target="_blank" rel="noreferrer">
+                  {social.label}
                 </a>
               ))}
-            </nav>
-
+              <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            </div>
           </div>
 
+          <div className="hero-photo hero-anim" style={{ "--d": 2 }}>
+            <img src={PHOTO} alt={t.photoAlt} />
+          </div>
         </div>
-
       </section>
 
+      {/* ===== BARIS ANGKA ===== */}
+      <section className="stats">
+        <div className="container stats-grid">
+          <div>
+            <strong>{t.stats.gpa[0]}</strong>
+            <span>{t.stats.gpa[1]}</span>
+          </div>
+          <div>
+            <strong>{projects.length}</strong>
+            <span>{t.stats.projects}</span>
+          </div>
+          <div>
+            <strong>{CERTIFICATIONS.length}</strong>
+            <span>{t.stats.certs}</span>
+          </div>
+          <div>
+            <strong>{TOEFL}</strong>
+            <span>{t.stats.toefl}</span>
+          </div>
+        </div>
+      </section>
 
-      {/* ================= ABOUT ================= */}
-      <section id="about" className="about section">
-
-        {/* KIRI: deskripsi + kartu */}
-        <div className="about-intro">
-
-          <p className="about-text">
-            Fresh Information Systems graduate from Universitas Airlangga. I've built my foundation through an internship and academic projects, analyzing requirements, designing databases, and developing web apps with Laravel and Next.js. I learn fast, enjoy working in teams, and I'm eager to grow in a professional environment.
-          </p>
+      {/* ===== ABOUT ===== */}
+      <section className="section" id="about">
+        <div className="container about-inner">
+          <div className="about-text reveal">
+            <p className="section-label">{t.aboutLabel}</p>
+            <h2 className="section-title">{t.aboutTitle}</h2>
+            <p>{t.aboutText}</p>
+          </div>
 
           <div className="about-cards">
-
-            <article className="about-card">
-              <svg
-                className="about-card-art"
-                viewBox="0 0 260 78"
-                aria-hidden="true"
-              >
-                <circle cx="22" cy="39" r="14" fill="#FFFBD8" stroke="#232323" strokeWidth="2" />
-                <circle cx="22" cy="34" r="4" fill="#232323" />
-                <path d="M14 47c3-6 13-6 16 0" stroke="#232323" strokeWidth="2" fill="none" />
-                <path d="M38 39h22M62 39l4-14M62 39l4 14" stroke="#232323" strokeWidth="2" fill="none" />
-                <ellipse cx="100" cy="20" rx="34" ry="12" fill="#FE64A3" stroke="#232323" strokeWidth="2" />
-                <text x="100" y="24" textAnchor="middle" fontSize="10" fontWeight="700" fill="#232323">submit</text>
-                <ellipse cx="100" cy="58" rx="34" ry="12" fill="#976BDD" stroke="#232323" strokeWidth="2" />
-                <text x="100" y="62" textAnchor="middle" fontSize="10" fontWeight="700" fill="#232323">approve</text>
-                <path d="M136 20h30M136 58h30" stroke="#232323" strokeWidth="2" strokeDasharray="4 3" />
-                <rect x="170" y="8" width="80" height="62" fill="#FFFBD8" stroke="#232323" strokeWidth="2" />
-                <rect x="170" y="8" width="80" height="16" fill="#232323" />
-                <path d="M178 36h50M178 46h40M178 56h56" stroke="#232323" strokeWidth="2" />
+            <div className="card skill-card reveal" style={{ "--d": 1 }}>
+              <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="16" rx="2" />
+                <path d="M7 9h10M7 13h6M7 17h4" />
               </svg>
-
-              <h3>I ANALYZE</h3>
+              <h3>{t.analyzeTitle}</h3>
               <ul>
-                <li>Requirements and scope</li>
-                <li>Use case and process mapping</li>
-                <li>Database design (CDM / PDM)</li>
-                <li>User guides and documentation</li>
+                {t.analyzeList.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
               </ul>
-            </article>
+            </div>
 
-            <article className="about-card about-card-dark">
-              <div className="about-code" aria-hidden="true">
-                <div className="about-code-bar">
-                  <span /><span /><span />
-                </div>
-                <pre>
-                  <code>
-                    <span className="c-purple">Route</span>::<span className="c-pink">resource</span>(<span className="c-green">'packages'</span>);{"\n"}
-                    <span className="c-purple">const</span> meal = <span className="c-pink">useState</span>();
-                  </code>
-                </pre>
-              </div>
-
-              <h3>I BUILD</h3>
+            <div className="card skill-card reveal" style={{ "--d": 2 }}>
+              <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16" />
+              </svg>
+              <h3>{t.buildTitle}</h3>
               <ul>
-                <li>Laravel MVC and Eloquent</li>
-                <li>Next.js, React, Tailwind CSS</li>
-                <li>CRUD admin dashboards</li>
-                <li>Responsive desktop and mobile UI</li>
+                {t.buildList.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
               </ul>
-            </article>
-
+            </div>
           </div>
-
         </div>
-
-        {/* KANAN: judul + foto */}
-        <div className="about-side">
-
-          <h2 className="about-heading">
-            ABOUT <span>ME</span>
-          </h2>
-
-          <div className="about-photo">
-            <img
-              src="/IMG_3470_d_crop-removebg-preview.png"
-              alt="Nibras Zakiyya Azizah"
-            />
-          </div>
-
-        </div>
-
       </section>
 
+      {/* ===== PROJECTS ===== */}
+      <section className="section section-white" id="projects">
+        <div className="container">
+          <div className="section-head reveal">
+            <div>
+              <p className="section-label">{t.workLabel}</p>
+              <h2 className="section-title">{t.workTitle}</h2>
+            </div>
+            <p>{t.workIntro}</p>
+          </div>
 
-      {/* ================= EDUCATION ================= */}
-      <section id="education" className="education section">
-
-        <div className="section-heading">
-          <p>BACKGROUND</p>
-          <h2>EDUCATION</h2>
-        </div>
-
-        <div className="edu-list">
-
-          <div className={`edu-item ${eduOpen ? "is-open" : ""}`}>
-
-            <button
-              className="edu-head"
-              onClick={() => setEduOpen((prev) => !prev)}
-              aria-expanded={eduOpen}
-            >
-              <span className="edu-year">2022 –<br />2026</span>
-
-              <span className="edu-main">
-                <span className="edu-school">Universitas Airlangga</span>
-                <span className="edu-degree">
-                  Bachelor of Information Systems · Faculty of Science and Technology
-                </span>
-                <span className="edu-gpa">
-                  GPA <strong>3.40</strong> / 4.00
-                </span>
-              </span>
-
-              <span className="edu-toggle" aria-hidden="true">
-                <span>+</span>
-              </span>
-            </button>
-
-            <div className="edu-body">
-              <div>
-                <div className="edu-details">
-
-                  {/* SKRIPSI */}
-                  <div className="edu-box edu-thesis">
-                    <b>UNDERGRADUATE THESIS</b>
-
-                    <h4>
-                      Forecasting Indonesia's Annual Rice Production Using LSTM
-                      with Transfer Learning on Multivariate Low-Frequency Time
-                      Series
-                    </h4>
-
-                    <p>
-                      Compared XGBoost, LSTM, and LSTM with transfer learning
-                      against an ARIMA baseline, using 66 years of USDA data
-                      (1960–2025). XGBoost delivered the most accurate and stable
-                      predictions for this small annual dataset.
-                    </p>
-
-                    <div className="edu-thesis-stats">
-                      <div>
-                        <strong>1.33%</strong>
-                        <span> MAPE (best model)</span>
-                      </div>
-                      <div>
-                        <strong>0.826</strong>
-                        <span> R² score</span>
-                      </div>
-                      <div>
-                        <strong>66</strong>
-                        <span> years of data</span>
-                      </div>
-                    </div>
-
-                    <div className="edu-tags">
-                      <span>XGBoost</span>
-                      <span>LSTM</span>
-                      <span>Transfer Learning</span>
-                      <span>ARIMA</span>
-                      <span>Walk-Forward Validation</span>
-                    </div>
-                  </div>
-
-                  {/* ORGANISASI */}
-                  <div className="edu-box edu-org">
-                    <div className="edu-org-head">
-                      <div>
-                        <b>ORGANIZATION</b>
-                        <h4>HIMSI Universitas Airlangga</h4>
-                        <span className="edu-org-role">
-                          Expert Staff · Entrepreneurship and Inventory Division
-                        </span>
-                      </div>
-                      <span className="edu-org-year">2024</span>
-                    </div>
-
-                    <p className="edu-org-desc">
-                      Information Systems Student Association — the student
-                      organization of the Information Systems program.
-                    </p>
-
-                    <ul>
-                      <li>
-                        Managed inventory records, equipment lending logs, and
-                        transaction documentation to keep administrative data
-                        accurate and up to date.
-                      </li>
-                      <li>
-                        Coordinated with vendors and internal divisions for the
-                        procurement and sale of association merchandise.
-                      </li>
-                      <li>
-                        Supported budgeting and reporting through organized
-                        records of sales and inventory.
-                      </li>
-                    </ul>
-                  </div>
-
+          <div className="project-grid">
+            {projects.map((project, index) => (
+              <Link
+                to={`/projects/${project.number}`}
+                className="card project-card reveal"
+                style={{ "--d": index }}
+                key={project.number}
+              >
+                <div className="project-card-image">
+                  <img src={projectCover(project)} alt={project.title} loading="lazy" />
                 </div>
+
+                <div className="project-card-body">
+                  <span className="project-card-meta">
+                    {projectText(project, "label", lang)} · {project.year}
+                  </span>
+                  <h3>{project.title}</h3>
+                  <p>{projectText(project, "category", lang)}</p>
+
+                  <div className="project-card-tags">
+                    {(project.stack || []).slice(0, 3).map((tech) => (
+                      <span className="tag" key={stackName(tech)}>
+                        {stackName(tech)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== EDUCATION ===== */}
+      <section className="section" id="education">
+        <div className="container">
+          <div className="reveal" style={{ marginBottom: 48 }}>
+            <p className="section-label">{t.eduLabel}</p>
+            <h2 className="section-title">{t.eduTitle}</h2>
+          </div>
+
+          <div className="card edu-card reveal">
+            <div className="edu-top">
+              <div>
+                <h3>Universitas Airlangga</h3>
+                <p>{t.degree}</p>
+              </div>
+              <div className="edu-side">
+                2022 – 2026
+                <strong>{t.gpaText}</strong>
               </div>
             </div>
 
+            <div className="edu-thesis">
+              <div className="edu-thesis-text">
+                <p className="edu-small-label">{t.thesisLabel}</p>
+                <p className="edu-thesis-title">{t.thesisTitle}</p>
+                <p>{t.thesisSummary}</p>
+              </div>
+
+              <div className="edu-thesis-stats">
+                {t.thesisStats.map(([value, label]) => (
+                  <div key={label}>
+                    <strong>{value}</strong>
+                    <span>{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
+          <div className="card edu-card org-card reveal">
+            <div>
+              <h3>HIMSI Universitas Airlangga</h3>
+              <p className="org-role">{t.orgRole}</p>
+              <ul>
+                {t.orgList.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <span className="org-year">2024</span>
+          </div>
         </div>
-
       </section>
 
-            {/* ================= CERTIFICATIONS ================= */}
-      <section className="section certifications" id="certifications">
-
-        <div className="cert-header">
-          <div className="section-heading">
-            <p>CREDENTIALS</p>
-            <h2>CERTIFICATIONS</h2>
+      {/* ===== CERTIFICATIONS ===== */}
+      <section className="section section-white" id="certifications">
+        <div className="container">
+          <div className="reveal" style={{ marginBottom: 40 }}>
+            <p className="section-label">{t.certLabel}</p>
+            <h2 className="section-title">{t.certTitle}</h2>
           </div>
 
-          <p className="cert-count">
-            {CERTIFICATIONS.length} certifications
-            <br />
-            {HKI.items.length} registered HKI
-          </p>
-        </div>
-
-        <div className="cert-grid">
-          {CERTIFICATIONS.map((item) => (
-            <a
-              key={item.title}
-              href={item.link}
-              target="_blank"
-              rel="noreferrer"
-              className="cert-card"
-            >
-              <div className="cert-issuer">
-                <span
-                  className={`cert-badge ${item.logo ? "has-logo" : ""}`}
-                  style={{ background: item.logo ? "#fff" : item.badgeColor }}
-                >
-                  {item.logo ? (
-                    <img src={item.logo} alt={item.issuer} />
-                  ) : (
-                    item.initials
-                  )}
-                </span>
-                <span>{item.issuer}</span>
-              </div>
-
-              <h3>{item.title}</h3>
-
-              <div className="cert-footer">
-                <span>{item.date}</span>
-                <span className="cert-view">VIEW ↗</span>
-              </div>
-            </a>
-          ))}
-        </div>
-
-        <div className="cert-ip">
-
-          <p className="cert-ip-label">INTELLECTUAL PROPERTY (HKI)</p>
-          <p className="cert-ip-meta">
-            Registered copyrights as co-creator · {HKI.issuer} · {HKI.date}
-          </p>
-
-          <div className="cert-ip-list">
-            {HKI.items.map((item) => (
+          <div className="cert-list reveal">
+            {CERTIFICATIONS.map((item) => (
               <a
                 key={item.title}
                 href={item.link}
                 target="_blank"
                 rel="noreferrer"
+                className="cert-item"
               >
-                <span>{item.title}</span>
-                <span className="cert-view">VIEW ↗</span>
+                <div>
+                  <p className="cert-item-title">{item.title}</p>
+                  <p className="cert-item-meta">
+                    {item.issuer} · {tr(item.date, lang)}
+                  </p>
+                </div>
+                <span className="cert-view">{t.view}</span>
               </a>
             ))}
           </div>
 
-        </div>
-
-      </section>
-
-
-      <section id="projects" className="work section">
-        <div className="section-heading">
-          <p>SELECTED WORK</p>
-          <h2>PROJECTS</h2>
-        </div>
-
-        <div className="project-grid">
-          {projects.map((project) => (
-            <Link
-              to={`/projects/${project.number}`}
-              className={`pcard ${project.color}`}
-              key={project.number}
-            >
-              <div className="pcard-top">
-                <span>{project.number}</span>
-                <span className="pcard-arrow">↗</span>
-              </div>
-
-              <div className="pcard-frame">
-                <div className="pcard-bar">
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                </div>
-                <div className="pcard-logo">
-                  {project.logo ? (
-                    <img src={project.logo} alt={`${project.title} logo`} />
-                  ) : (
-                    <span>{project.title}</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="pcard-info">
-                <h3>{project.title}</h3>
-                <p>{[project.role, project.year].filter(Boolean).join(" · ")}</p>
-              </div>
-
-              <div className="pcard-tags">
-                {(project.stack || []).slice(0, 3).map((tech) => {
-                  const name = typeof tech === "string" ? tech : tech.name;
-                  return <span key={name}>{name}</span>;
-                })}
-              </div>
-            </Link>
-          ))}
+          <div className="hki-box reveal">
+            <strong>{t.hkiTitle}</strong> {t.hkiText} · {HKI.issuer} · {tr(HKI.date, lang)}
+            <div className="hki-links">
+              {HKI.items.map((item) => (
+                <a key={item.link} href={item.link} target="_blank" rel="noreferrer">
+                  {item.title} ↗
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
-
     </main>
   );
 }

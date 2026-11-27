@@ -1,52 +1,58 @@
 const EMAIL = "nibrszkzh@gmail.com";
 
 const TEXT = {
-  en: { label: "OPEN TO FULL-TIME OPPORTUNITIES", top: "BACK TO TOP ↑" },
-  id: { label: "TERBUKA UNTUK PEKERJAAN FULL-TIME", top: "KEMBALI KE ATAS ↑" },
+  en: {
+    title: "Let's talk.",
+    subtitle: "Open to full-time roles as a Web Developer or System Analyst.",
+    top: "Back to top ↑",
+  },
+  id: {
+    title: "Mari berdiskusi.",
+    subtitle: "Terbuka untuk posisi full-time sebagai Web Developer atau System Analyst.",
+    top: "Kembali ke atas ↑",
+  },
 };
 
 const FOOTER_LINKS = [
-  { label: "GITHUB", href: "https://github.com/nibraszakiyya" },
-  { label: "LINKEDIN", href: "https://linkedin.com/in/nibras-zakiyya-azizah" },
-  { label: "WHATSAPP", href: "https://wa.me/6281212768781?text=Hi%20Nibras%2C%20I%20saw%20your%20portfolio" },
-  { label: "EMAIL", href: `mailto:${EMAIL}` },
+  { label: "GitHub", href: "https://github.com/nibraszakiyya" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/nibras-zakiyya-azizah" },
+  { label: "WhatsApp", href: "https://wa.me/6281212768781?text=Hi%20Nibras%2C%20I%20saw%20your%20portfolio" },
 ];
 
 function Footer({ lang = "en" }) {
-  const t = TEXT[lang];
+  const t = TEXT[lang] || TEXT.en;
 
   return (
-    <footer className="footer">
-      <div className="footer-top">
-        <div>
-          <p className="footer-label">{t.label}</p>
-          <a href={`mailto:${EMAIL}`} className="footer-email">
-            {EMAIL} ↗
+    <footer className="footer" id="contact">
+      <div className="container footer-inner">
+        <div className="footer-cta">
+          <div>
+            <h2>{t.title}</h2>
+            <p>{t.subtitle}</p>
+          </div>
+          <a href={`mailto:${EMAIL}`} className="btn btn-light">
+            {EMAIL}
           </a>
         </div>
 
-        <nav className="footer-links">
-          {FOOTER_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target={link.href.startsWith("mailto") ? undefined : "_blank"}
-              rel="noreferrer"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-      </div>
+        <div className="footer-bottom">
+          <span>© 2026 Nibras Zakiyya Azizah</span>
 
-      <div className="footer-bottom">
-        <p>© 2026 NIBRAS ZAKIYYA AZIZAH</p>
-        <button
-          className="footer-top-button"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          {t.top}
-        </button>
+          <div className="footer-links">
+            {FOOTER_LINKS.map((link) => (
+              <a key={link.label} href={link.href} target="_blank" rel="noreferrer">
+                {link.label}
+              </a>
+            ))}
+            <button
+              type="button"
+              className="footer-top-button"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
+              {t.top}
+            </button>
+          </div>
+        </div>
       </div>
     </footer>
   );
